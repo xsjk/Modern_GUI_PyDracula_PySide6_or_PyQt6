@@ -16,11 +16,14 @@
 
 # MAIN FILE
 # ///////////////////////////////////////////////////////////////
-from main import *
+from app_settings import Settings
+from ui_window import MainWindowBase
+
 
 # WITH ACCESS TO MAIN WINDOW WIDGETS
 # ///////////////////////////////////////////////////////////////
-class AppFunctions(MainWindow):
+class AppFunctions(MainWindowBase):
+
     def setThemeHack(self):
         Settings.BTN_LEFT_BOX_COLOR = "background-color: #495474;"
         Settings.BTN_RIGHT_BOX_COLOR = "background-color: #495474;"

@@ -16,14 +16,20 @@
 
 # MAIN FILE
 # ///////////////////////////////////////////////////////////////
-from main import *
+from PySide6.QtCore import *
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
+from custom_grips import CustomGrip
+from app_settings import Settings
+from ui_window import MainWindowBase
 
 # GLOBALS
 # ///////////////////////////////////////////////////////////////
 GLOBAL_STATE = False
 GLOBAL_TITLE_BAR = True
 
-class UIFunctions(MainWindow):
+class UIFunctions(MainWindowBase):
+
     # MAXIMIZE/RESTORE
     # ///////////////////////////////////////////////////////////////
     def maximize_restore(self):
@@ -84,7 +90,7 @@ class UIFunctions(MainWindow):
             self.animation.setDuration(Settings.TIME_ANIMATION)
             self.animation.setStartValue(width)
             self.animation.setEndValue(widthExtended)
-            self.animation.setEasingCurve(QEasingCurve.InOutQuart)
+            self.animation.setEasingCurve(QEasingCurve.Type.InOutQuart)
             self.animation.start()
 
     # TOGGLE LEFT BOX
@@ -165,14 +171,14 @@ class UIFunctions(MainWindow):
         self.left_box.setDuration(Settings.TIME_ANIMATION)
         self.left_box.setStartValue(left_box_width)
         self.left_box.setEndValue(left_width)
-        self.left_box.setEasingCurve(QEasingCurve.InOutQuart)
+        self.left_box.setEasingCurve(QEasingCurve.Type.InOutQuart)
 
         # ANIMATION RIGHT BOX        
         self.right_box = QPropertyAnimation(self.ui.extraRightBox, b"minimumWidth")
         self.right_box.setDuration(Settings.TIME_ANIMATION)
         self.right_box.setStartValue(right_box_width)
         self.right_box.setEndValue(right_width)
-        self.right_box.setEasingCurve(QEasingCurve.InOutQuart)
+        self.right_box.setEasingCurve(QEasingCurve.Type.InOutQuart)
 
         # GROUP ANIMATION
         self.group = QParallelAnimationGroup()
@@ -183,11 +189,13 @@ class UIFunctions(MainWindow):
     # SELECT/DESELECT MENU
     # ///////////////////////////////////////////////////////////////
     # SELECT
+    @staticmethod
     def selectMenu(getStyle):
         select = getStyle + Settings.MENU_SELECTED_STYLESHEET
         return select
 
     # DESELECT
+    @staticmethod
     def deselectMenu(getStyle):
         deselect = getStyle.replace(Settings.MENU_SELECTED_STYLESHEET, "")
         return deselect
@@ -214,34 +222,34 @@ class UIFunctions(MainWindow):
     # START - GUI DEFINITIONS
     # ///////////////////////////////////////////////////////////////
     def uiDefinitions(self):
-        def dobleClickMaximizeRestore(event):
+        def dobleClickMaximizeRestore(event: QMouseEvent):
             # IF DOUBLE CLICK CHANGE STATUS
-            if event.type() == QEvent.MouseButtonDblClick:
+            if event.type() == QEvent.Type.MouseButtonDblClick:
                 QTimer.singleShot(250, lambda: UIFunctions.maximize_restore(self))
         self.ui.titleRightInfo.mouseDoubleClickEvent = dobleClickMaximizeRestore
 
         if Settings.ENABLE_CUSTOM_TITLE_BAR:
             #STANDARD TITLE BAR
-            self.setWindowFlags(Qt.FramelessWindowHint)
+            self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
             self.setAttribute(Qt.WA_TranslucentBackground)
 
             # MOVE WINDOW / MAXIMIZE / RESTORE
-            def moveWindow(event):
+            def moveWindow(event: QMouseEvent):
                 # IF MAXIMIZED CHANGE TO NORMAL
                 if UIFunctions.returStatus(self):
                     UIFunctions.maximize_restore(self)
                 # MOVE WINDOW
-                if event.buttons() == Qt.LeftButton:
-                    self.move(self.pos() + event.globalPos() - self.dragPos)
-                    self.dragPos = event.globalPos()
+                if event.buttons() == Qt.MouseButton.LeftButton:
+                    self.move(self.pos() + event.globalPosition().toPoint() - self.dragPos)
+                    self.dragPos = event.globalPosition().toPoint()
                     event.accept()
             self.ui.titleRightInfo.mouseMoveEvent = moveWindow
 
             # CUSTOM GRIPS
-            self.left_grip = CustomGrip(self, Qt.LeftEdge, True)
-            self.right_grip = CustomGrip(self, Qt.RightEdge, True)
-            self.top_grip = CustomGrip(self, Qt.TopEdge, True)
-            self.bottom_grip = CustomGrip(self, Qt.BottomEdge, True)
+            self.left_grip = CustomGrip(self, Qt.Edge.LeftEdge, True)
+            self.right_grip = CustomGrip(self, Qt.Edge.RightEdge, True)
+            self.top_grip = CustomGrip(self, Qt.Edge.TopEdge, True)
+            self.bottom_grip = CustomGrip(self, Qt.Edge.BottomEdge, True)
 
         else:
             self.ui.appMargins.setContentsMargins(0, 0, 0, 0)

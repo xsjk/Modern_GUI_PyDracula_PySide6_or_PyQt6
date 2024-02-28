@@ -63,7 +63,7 @@ Up
 
 > **modules/ui_functions.py**: add here only functions related to the user interface / GUI.
 
-> **modules/ui_main.py**: file related to the user interface exported by Qt Designer. You can compile it manually using the command: ```pyside6-uic main.ui> ui_main.py ```.
+> **modules/ui_main.py**: file related to the user interface exported by Qt Designer. You can compile it manually using the command: ```pyside6-uic main.ui > ui_main.py```.
 After expoting in .py and change the line "import resources_rc" to "from. Resoucers_rc import *" to use as a module.
 
 > **images/**: put all your images and icons here before converting to Python (resources_re.py) ```pyside6-rcc resources.qrc -o resources_rc.py```.
